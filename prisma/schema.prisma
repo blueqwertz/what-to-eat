@@ -3,16 +3,66 @@
 
 generator client {
     provider = "prisma-client-js"
-    previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+    provider     = "mysql"
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+// ENUMS
+enum TimeOfDay {
+    MORNING
+    NOON
+    AFTERNOON
+    EVENING
+    NIGHT
+}
+
+// MODELS
+model History {
+    id        String    @id @default(cuid())
+    date      DateTime  @default(now())
+    mealId    String
+    meal      Meal      @relation(fields: [mealId], references: [id])
+    timeOfDay TimeOfDay @default(NOON)
+
+    @@index([mealId])
+}
+
+model Meal {
+    id                 String               @id @default(cuid())
+    createdAt          DateTime             @default(now())
+    name               String
+    history            History[]
+    ingredientsInMeals IngredientsInMeals[]
+    rating             Rating[]
+}
+
+model Ingredient {
+    id                 String               @id @default(cuid())
+    name               String
+    image              String               @default("")
+    ingredientsInMeals IngredientsInMeals[]
+}
+
+model IngredientsInMeals {
+    mealId       String
+    meal         Meal       @relation(fields: [mealId], references: [id])
+    ingredientId String
+    ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+
+    @@id([mealId, ingredientId])
+    @@index([mealId])
+    @@index([ingredientId])
+}
+
+model Rating {
+    id     String @id @default(cuid())
+    score  Float
+    mealId String
+    meal   Meal   @relation(fields: [mealId], references: [id])
+
+    @@index([mealId])
 }
