@@ -16,6 +16,7 @@ export default MealTable;
 import { Meal } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "../ui/datatable";
+import IngredientPopover from "./ingredientspopover";
 
 export const columns: ColumnDef<
   ({ _count: { ingredientsInMeals: number } } | undefined) & Meal
@@ -28,7 +29,12 @@ export const columns: ColumnDef<
     accessorKey: "_count.ingredientsInMeal",
     header: "Zutaten",
     cell: ({ row }) => {
-      return <>{row.original._count.ingredientsInMeals ?? 0}</>;
+      return (
+        <IngredientPopover
+          id={row.original.id}
+          count={row.original._count.ingredientsInMeals}
+        />
+      );
     },
   },
 ];

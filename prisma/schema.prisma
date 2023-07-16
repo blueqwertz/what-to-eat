@@ -20,6 +20,13 @@ enum TimeOfDay {
     NIGHT
 }
 
+enum Unit {
+    GRAMM
+    MILLILITER
+    SPOONS
+    PIECES
+}
+
 // MODELS
 model History {
     id        String    @id @default(cuid())
@@ -52,6 +59,8 @@ model IngredientsInMeals {
     meal         Meal       @relation(fields: [mealId], references: [id])
     ingredientId String
     ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+    count        Int        @default(0)
+    unit         Unit       @default(GRAMM)
 
     @@id([mealId, ingredientId])
     @@index([mealId])

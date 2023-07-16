@@ -1,6 +1,7 @@
 import { historyRouter } from "~/server/api/routers/history";
 import { createTRPCRouter } from "~/server/api/trpc";
 import { mealRouter } from "./routers/meal";
+import { ingredientRouter } from "./routers/ingredients";
 
 /**
  * This is the primary router for your server.
@@ -10,6 +11,7 @@ import { mealRouter } from "./routers/meal";
 export const appRouter = createTRPCRouter({
   history: historyRouter,
   meals: mealRouter,
+  ingredients: ingredientRouter,
 });
 
 // export type definition of API

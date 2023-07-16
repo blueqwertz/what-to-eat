@@ -9,7 +9,12 @@ function HistoryTable() {
     return <div className="flex items-center gap-1">Loading...</div>;
   }
 
-  return <DataTable data={history!} columns={columns} />;
+  return (
+    <div className="space-y-3">
+      <DataTable data={history!} columns={columns} />
+      <AddMeal />
+    </div>
+  );
 }
 
 export default HistoryTable;
@@ -18,6 +23,8 @@ import { History, Meal } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "../ui/badge";
 import { DateChanger } from "./datechanger";
+import { timeOfDayNameMap } from "~/utils/enumMaps";
+import AddMeal from "./addMeal";
 
 export const columns: ColumnDef<({ meal: Meal } | undefined) & History>[] = [
   {
@@ -25,13 +32,6 @@ export const columns: ColumnDef<({ meal: Meal } | undefined) & History>[] = [
     header: "Essen",
     cell: ({ row }) => {
       const entry = row.original;
-      const timeOfDayNameMap = {
-        MORNING: "Frühstück",
-        NOON: "Mittagessen",
-        AFTERNOON: "Nachmittag",
-        EVENING: "Abendessen",
-        NIGHT: "Nacht",
-      };
 
       return (
         <>

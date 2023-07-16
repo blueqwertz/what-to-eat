@@ -25,8 +25,8 @@ export function DateChanger({ defaultDate, id }: DatePickerProps) {
     defaultDate ?? new Date()
   );
 
-  const [isLoading, setLoading] = React.useState<Boolean>(false);
-  const [checked, setChecked] = React.useState<Boolean>(false);
+  const [isLoading, setLoading] = React.useState<boolean>(false);
+  const [checked, setChecked] = React.useState<boolean>(false);
 
   const { mutate: updateEntry } = api.history.updateEntry.useMutation({
     onMutate: () => {
@@ -64,7 +64,7 @@ export function DateChanger({ defaultDate, id }: DatePickerProps) {
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent align="center" className="w-auto p-0">
+        <PopoverContent align="center" className="mx-3 w-auto p-0">
           <Calendar
             mode="single"
             selected={date}
