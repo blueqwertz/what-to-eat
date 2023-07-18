@@ -27,6 +27,7 @@ export function DateChanger({ defaultDate, id }: DatePickerProps) {
 
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [checked, setChecked] = React.useState<boolean>(false);
+  const ctx = api.useContext();
 
   const { mutate: updateEntry } = api.history.updateEntry.useMutation({
     onMutate: () => {
@@ -36,6 +37,7 @@ export function DateChanger({ defaultDate, id }: DatePickerProps) {
       setLoading(false);
     },
     onSuccess: () => {
+      ctx.history.getAll.invalidate();
       setLoading(false);
       setChecked(true);
       setTimeout(() => {
@@ -69,7 +71,7 @@ export function DateChanger({ defaultDate, id }: DatePickerProps) {
             mode="single"
             selected={date}
             onSelect={(day) => {
-              setDate(day);
+              setDate(day ?? new Date());
               updateEntry({
                 data: {
                   id,
@@ -83,7 +85,7 @@ export function DateChanger({ defaultDate, id }: DatePickerProps) {
         </PopoverContent>
       </Popover>
       <span className="w-[150px]">
-        {date ? dayjs(date).format("DD. MMMM YYYY") : <span>Datum wählen</span>}
+        {date ? dayjs(date).format("dd, DD. MMMM") : <span>Datum wählen</span>}
       </span>
     </div>
   );

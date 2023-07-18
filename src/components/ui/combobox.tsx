@@ -17,16 +17,24 @@ import {
 } from "@/components/ui/popover";
 
 type ComboboxInput = {
+  value: string | undefined;
+  setValue: (value: string | undefined) => void;
   placeholder?: string;
   options: {
     value: string;
     label: string;
   }[];
+  className?: string;
 };
 
-export function Combobox({ options, placeholder }: ComboboxInput) {
+export function Combobox({
+  options,
+  placeholder,
+  value,
+  setValue,
+  className,
+}: ComboboxInput) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -36,8 +44,9 @@ export function Combobox({ options, placeholder }: ComboboxInput) {
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-[160px] justify-between px-3 font-normal",
-            !value && "text-muted-foreground"
+            "min-w-[160px] justify-between px-3 font-normal",
+            !value && "text-muted-foreground",
+            className
           )}
         >
           {value
@@ -57,7 +66,9 @@ export function Combobox({ options, placeholder }: ComboboxInput) {
               <CommandItem
                 key={framework.value}
                 onSelect={() => {
-                  setValue(framework.value === value ? "" : framework.value);
+                  setValue(
+                    framework.value === value ? undefined : framework.value
+                  );
                   setOpen(false);
                 }}
               >

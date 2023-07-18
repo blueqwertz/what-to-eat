@@ -13,6 +13,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -25,10 +34,11 @@ import { unitMap } from "~/utils/enumMaps";
 
 type IngredientPopoverType = {
   id: string;
+  name: string;
   count: number;
 };
 
-function IngredientPopover({ id, count }: IngredientPopoverType) {
+function IngredientPopover({ id, count, name }: IngredientPopoverType) {
   const { data: ingredientsInMeal, isLoading } =
     api.meals.getIngredients.useQuery({
       data: { id },
@@ -43,15 +53,21 @@ function IngredientPopover({ id, count }: IngredientPopoverType) {
   }
 
   return (
-    <Popover>
-      <PopoverTrigger>
+    <Dialog>
+      <DialogTrigger>
         <Button className="h-8 w-8 p-0" variant={"outline"}>
           {count < 10 ? count : "9+"}
         </Button>
-      </PopoverTrigger>
-      <PopoverContent align="end" className="min-w-fit">
+      </DialogTrigger>
+      <DialogContent className="w-[calc(100vw-1.5rem)] rounded-lg">
+        <DialogHeader>
+          <DialogTitle>Zutaten für {name}</DialogTitle>
+          <DialogDescription>
+            Sieh dir an welche Zutaten in diesem Gericht sind oder füge welche
+            hinzu.
+          </DialogDescription>
+        </DialogHeader>
         <Table className="overflow-hidden rounded-lg">
-          <TableCaption>Zutaten für dieses Gericht.</TableCaption>
           <TableBody>
             {ingredientsInMeal?.map((entry) => {
               return (
@@ -86,8 +102,8 @@ function IngredientPopover({ id, count }: IngredientPopoverType) {
             </TableRow>
           </TableBody>
         </Table>
-      </PopoverContent>
-    </Popover>
+      </DialogContent>
+    </Dialog>
   );
 }
 

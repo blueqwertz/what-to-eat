@@ -16,18 +16,30 @@ type MealComboType = {
 function IngredientCombo({ filter }: MealComboType) {
   const { data: ingredients, isLoading } = api.ingredients.getAll.useQuery();
 
+  const [value, setValue] = React.useState<string | undefined>();
+
   if (isLoading || !ingredients) {
     return <Loader2 className="h-4 w-4 animate-spin" />;
   }
 
   return (
     <Combobox
-      options={ingredients?.map((entry) => {
-        return {
-          value: entry.id,
-          label: entry.name,
-        };
-      })}
+      value={value}
+      setValue={(value) => {
+        setValue(value);
+      }}
+      options={ingredients
+        ?.map((entry) => {
+          return {
+            value: entry.id,
+            label: entry.name,
+          };
+        })
+        .filter((entry) => {
+          return !filter?.find(
+            (element) => element.ingredient.id == entry.value
+          );
+        })}
       placeholder="Zutat"
     />
   );

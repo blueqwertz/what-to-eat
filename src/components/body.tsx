@@ -3,6 +3,7 @@ import { Badge } from "./ui/badge";
 import { ArrowRight } from "lucide-react";
 import HistoryTable from "./historytable/historytable";
 import MealTable from "./mealtable/mealtable";
+import AddMeal from "./historytable/addmeal/addmeal";
 
 function Body() {
   return (
@@ -13,15 +14,16 @@ function Body() {
           <span className="ml-2 mr-2">Neue Features</span>
           <ArrowRight className="h-3 w-3" />
         </Badge> */}
-        <div className="flex flex-wrap gap-6">
+        <AddMeal />
+        <div className="flex flex-col flex-wrap gap-9 lg:flex-row">
           {/* HISTORY */}
           <div className="flex-1 space-y-3">
-            <h1 className="text-2xl font-semibold">Historie</h1>
+            <h1 className="text-lg font-semibold">Historie</h1>
             <HistoryTable />
           </div>
           {/* MEALS */}
           <div className="flex-1 space-y-3">
-            <h1 className="text-2xl font-semibold">Essen</h1>
+            <h1 className="text-lg font-semibold">Gerichte</h1>
             <MealTable />
           </div>
         </div>

@@ -8,7 +8,16 @@ function MealTable() {
     return <div className="flex items-center gap-1">Loading...</div>;
   }
 
-  return <DataTable data={meals!} columns={columns} />;
+  return (
+    <>
+      <DataTable
+        data={meals!}
+        columns={columns}
+        searchField="name"
+        filterName="Gerichte"
+      />
+    </>
+  );
 }
 
 export default MealTable;
@@ -32,6 +41,7 @@ export const columns: ColumnDef<
       return (
         <IngredientPopover
           id={row.original.id}
+          name={row.original.name}
           count={row.original._count.ingredientsInMeals}
         />
       );
