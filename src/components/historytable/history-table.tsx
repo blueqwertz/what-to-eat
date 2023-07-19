@@ -4,12 +4,12 @@ import "@/utils/delocale";
 import { History, Meal } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "../ui/badge";
-import { DateChanger } from "./datechanger";
+import { DateChanger } from "./history-date-changer";
 import { timeOfDayNameMap } from "~/utils/enumMaps";
 import { Button } from "../ui/button";
 import { Loader2, Trash2 } from "lucide-react";
 import React from "react";
-import AddMeal from "./addmeal/addmeal";
+import AddHistory from "./addhistory/add-history";
 
 function HistoryTable() {
   const { data: history, isLoading } = api.history.getAll.useQuery();
@@ -79,23 +79,24 @@ export const columns: ColumnDef<({ meal: Meal } | undefined) & History>[] = [
         },
         onSuccess: () => {
           ctx.history.getAll.invalidate();
-          setLoading(false);
         },
       });
       return (
-        <Button
-          className="h-8 w-8 p-0"
-          variant={"outline"}
-          onClick={() => {
-            deleteEntry({ data: { id: row.original.id } });
-          }}
-        >
-          {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
-          ) : (
-            <Trash2 className="h-4 w-4 text-red-600" />
-          )}
-        </Button>
+        <div className="flex justify-end">
+          <Button
+            size={"icon"}
+            variant={"outline"}
+            onClick={() => {
+              deleteEntry({ data: { id: row.original.id } });
+            }}
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
+            ) : (
+              <Trash2 className="h-4 w-4 text-red-600" />
+            )}
+          </Button>
+        </div>
       );
     },
   },

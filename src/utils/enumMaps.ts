@@ -7,7 +7,6 @@ export const timeOfDayNameMap: TimeOfDayNameMapType = {
   NOON: "Mittagessen",
   AFTERNOON: "Nachmittag",
   EVENING: "Abendessen",
-  NIGHT: "Nacht",
 };
 
 export const unitMap = {

@@ -20,9 +20,9 @@ import {
 } from "@/components/ui/table";
 
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import React from "react";
 import { DataTablePagination } from "./data-table-pagination";
+import { cn } from "~/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

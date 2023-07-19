@@ -14,6 +14,7 @@ import {
 import dayjs from "dayjs";
 import { CalendarIcon, Check, Loader2 } from "lucide-react";
 import { api } from "~/utils/api";
+import { handleTRPCerror } from "~/utils/handleTRPCerror";
 
 type DatePickerProps = {
   defaultDate?: Date;
@@ -33,8 +34,9 @@ export function DateChanger({ defaultDate, id }: DatePickerProps) {
     onMutate: () => {
       setLoading(true);
     },
-    onError: () => {
+    onError: (e) => {
       setLoading(false);
+      handleTRPCerror(e);
     },
     onSuccess: () => {
       ctx.history.getAll.invalidate();
@@ -84,7 +86,7 @@ export function DateChanger({ defaultDate, id }: DatePickerProps) {
           />
         </PopoverContent>
       </Popover>
-      <span className="w-[150px]">
+      <span className="w-[110px] truncate sm:w-auto">
         {date ? dayjs(date).format("dd, DD. MMMM") : <span>Datum wählen</span>}
       </span>
     </div>

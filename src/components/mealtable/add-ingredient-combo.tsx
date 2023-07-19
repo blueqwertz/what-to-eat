@@ -11,12 +11,12 @@ type MealComboType = {
       image: string;
     };
   }[];
+  value: string | undefined;
+  setValue: (value: string | undefined) => void;
 };
 
-function IngredientCombo({ filter }: MealComboType) {
+function IngredientCombo({ filter, value, setValue }: MealComboType) {
   const { data: ingredients, isLoading } = api.ingredients.getAll.useQuery();
-
-  const [value, setValue] = React.useState<string | undefined>();
 
   if (isLoading || !ingredients) {
     return <Loader2 className="h-4 w-4 animate-spin" />;
@@ -41,6 +41,7 @@ function IngredientCombo({ filter }: MealComboType) {
           );
         })}
       placeholder="Zutat"
+      className="grow"
     />
   );
 }

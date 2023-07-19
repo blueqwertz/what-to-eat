@@ -18,8 +18,8 @@ import {
 import { Separator } from "./separator";
 
 type ComboboxInput = {
-  value: string | undefined;
-  setValue: (value: string | undefined) => void;
+  value: { value: string | undefined; label: string | undefined }[];
+  setValue: (value: string | undefined, label: string | undefined) => void;
   placeholder?: string;
   options: {
     value: string;
@@ -28,32 +28,32 @@ type ComboboxInput = {
   className?: string;
 };
 
-export function Combobox({
+export function ComboboxMulti({
   options,
   placeholder,
   value,
   setValue,
   className,
 }: ComboboxInput) {
-  const [open, setOpen] = React.useState(false);
   const [input, setInput] = React.useState("");
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
-          aria-expanded={open}
           className={cn(
             "w-[160px] justify-between px-3 font-normal",
-            !value && "text-muted-foreground",
+            !value.length && "text-muted-foreground",
             className
           )}
         >
-          {value
-            ? options.find((framework) => framework.value === value)?.label
-            : `${placeholder ?? "Item"} wählen`}
+          <span className="w-full truncate text-start">
+            {value.length
+              ? value.map((entry) => entry.label).join(", ")
+              : "Zutaten wählen..."}
+          </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -64,23 +64,26 @@ export function Combobox({
             {`Keine ${placeholder ?? "Items"} gefunden.`}
           </CommandEmpty>
           <CommandGroup>
-            {options.map((framework) => (
+            {options.map((option) => (
               <CommandItem
-                key={framework.value}
+                key={option.value}
                 onSelect={() => {
-                  setValue(
-                    framework.value === value ? undefined : framework.value
-                  );
-                  setOpen(false);
+                  const { value, label } =
+                    options.find((entry) => {
+                      return entry.value == option.value;
+                    }) ?? {};
+                  setValue(value, label);
                 }}
               >
                 <Check
                   className={cn(
                     "mr-2 h-4 w-4",
-                    value === framework.value ? "opacity-100" : "opacity-0"
+                    value.find((entry) => entry.value == option.value)
+                      ? "opacity-100"
+                      : "opacity-0"
                   )}
                 />
-                {framework.label}
+                {option.label}
               </CommandItem>
             ))}
           </CommandGroup>
