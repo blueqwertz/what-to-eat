@@ -90,7 +90,7 @@ function IngredientPopover({ id, name }: IngredientPopoverType) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="h-8 w-full py-0" variant={"outline"}>
+        <Button className="h-8 w-full truncate py-0" variant={"outline"}>
           {(totalCount ?? 0) < 10 ? totalCount : "9+"}{" "}
           {totalCount == 1 ? "Zutat" : "Zutaten"}
         </Button>
