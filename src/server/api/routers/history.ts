@@ -21,7 +21,7 @@ export const historyRouter = createTRPCRouter({
           date: z.date().optional(),
           mealId: z.string().cuid().optional(),
           timeOfDay: z
-            .enum(["MORNING", "NOON", "AFTERNOON", "EVENING", "NIGHT"])
+            .enum(["MORNING", "NOON", "AFTERNOON", "EVENING"])
             .optional(),
         }),
       })
@@ -47,13 +47,7 @@ export const historyRouter = createTRPCRouter({
         data: z.object({
           mealId: z.string().cuid(),
           date: z.date(),
-          timeOfDay: z.enum([
-            "MORNING",
-            "NOON",
-            "AFTERNOON",
-            "EVENING",
-            "NIGHT",
-          ]),
+          timeOfDay: z.enum(["MORNING", "NOON", "AFTERNOON", "EVENING"]),
         }),
       })
     )

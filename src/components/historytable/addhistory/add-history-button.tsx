@@ -22,7 +22,10 @@ function MealButton() {
       setLoading(false);
     },
     onSuccess: () => {
-      ctx.history.getAll.invalidate();
+      void ctx.history.getAll.invalidate();
+      void ctx.meals.getLastHistoryEntry.invalidate({
+        data: { id: meal.mealId },
+      });
       setLoading(false);
       setChecked(true);
       setTimeout(() => {

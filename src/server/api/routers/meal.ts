@@ -1,6 +1,7 @@
 import { Unit } from "@prisma/client";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { prisma } from "~/server/db";
 
 export const mealRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -46,6 +47,25 @@ export const mealRouter = createTRPCRouter({
         }),
       ]);
     }),
+  getLastHistoryEntry: publicProcedure
+    .input(
+      z.object({
+        data: z.object({
+          id: z.string().cuid(),
+        }),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.history.findMany({
+        where: {
+          mealId: input.data.id,
+        },
+        orderBy: {
+          date: "desc",
+        },
+        take: 1,
+      });
+    }),
   updateEntry: publicProcedure
     .input(
       z.object({
@@ -83,6 +103,25 @@ export const mealRouter = createTRPCRouter({
           ingredientId: input.data.ingredientId,
           count: input.data.count,
           unit: input.data.unit,
+        },
+      });
+    }),
+  deleteIngredient: publicProcedure
+    .input(
+      z.object({
+        data: z.object({
+          mealId: z.string().cuid(),
+          ingredientId: z.string().cuid(),
+        }),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.ingredientsInMeals.deleteMany({
+        where: {
+          AND: {
+            mealId: input.data.mealId,
+            ingredientId: input.data.ingredientId,
+          },
         },
       });
     }),
@@ -129,5 +168,66 @@ export const mealRouter = createTRPCRouter({
           id: input.data.id,
         },
       });
+    }),
+
+  // SEARCH
+  findMeal: publicProcedure
+    .input(
+      z.object({
+        data: z.object({
+          timeOfDay: z.enum(["MORNING", "NOON", "AFTERNOON", "EVENING"]),
+        }),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { timeOfDay } = input.data;
+
+      const lastMealAtTime = await ctx.prisma.history.findMany({
+        where: {
+          timeOfDay,
+        },
+        orderBy: {
+          date: "asc",
+        },
+        take: 2,
+        include: {
+          meal: {
+            select: {
+              id: true,
+              createdAt: true,
+              name: true,
+              _count: {
+                select: {
+                  ingredientsInMeals: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (lastMealAtTime?.length > 0) {
+        return lastMealAtTime;
+      }
+
+      const randomMeal = await ctx.prisma.history.findMany({
+        take: 2,
+        include: {
+          meal: {
+            select: {
+              id: true,
+              createdAt: true,
+              name: true,
+              _count: {
+                select: {
+                  ingredientsInMeals: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return randomMeal;
     }),
 });

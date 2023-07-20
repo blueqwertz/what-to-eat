@@ -14,7 +14,6 @@ import {
 import dayjs from "dayjs";
 import { CalendarIcon, Check, Loader2 } from "lucide-react";
 import { api } from "~/utils/api";
-import { handleTRPCerror } from "~/utils/handleTRPCerror";
 
 type DatePickerProps = {
   defaultDate?: Date;
@@ -36,10 +35,9 @@ export function DateChanger({ defaultDate, id }: DatePickerProps) {
     },
     onError: (e) => {
       setLoading(false);
-      handleTRPCerror(e);
     },
     onSuccess: () => {
-      ctx.history.getAll.invalidate();
+      void ctx.history.getAll.invalidate();
       setLoading(false);
       setChecked(true);
       setTimeout(() => {

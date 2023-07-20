@@ -29,6 +29,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchField?: string;
   filterName?: string;
+  showPages?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -36,6 +37,7 @@ export function DataTable<TData, TValue>({
   data,
   searchField,
   filterName,
+  showPages = true,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -58,7 +60,7 @@ export function DataTable<TData, TValue>({
       {!!searchField && (
         <div className="flex items-center pb-4">
           <Input
-            placeholder={`${filterName} durchsuchen...`}
+            placeholder={`${filterName ?? ""} durchsuchen...`}
             value={
               (table
                 .getColumn(searchField ?? "")
@@ -122,7 +124,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      {showPages && <DataTablePagination table={table} />}
     </div>
   );
 }

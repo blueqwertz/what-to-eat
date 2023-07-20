@@ -2,7 +2,7 @@ import * as React from "react";
 import { api } from "~/utils/api";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
-import { Check, Loader2, Plus } from "lucide-react";
+import { Check, Loader2, Plus, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -32,6 +32,7 @@ import { Input } from "../ui/input";
 import IngredientCombo from "./add-ingredient-combo";
 import { unitMap } from "~/utils/enumMaps";
 import { Unit } from "@prisma/client";
+import RemoveIngredientMeal from "./remove-ingredient-meal";
 
 type IngredientPopoverType = {
   id: string;
@@ -59,7 +60,7 @@ function IngredientPopover({ id, name }: IngredientPopoverType) {
       setLoading(false);
     },
     onSuccess: () => {
-      ctx.meals.getIngredients.invalidate({ data: { id } });
+      void ctx.meals.getIngredients.invalidate({ data: { id } });
       setLoading(false);
       setChecked(true);
       setTimeout(() => {
@@ -74,8 +75,8 @@ function IngredientPopover({ id, name }: IngredientPopoverType) {
     unit: Unit | undefined;
   }>({
     ingredientId: undefined,
-    count: undefined,
-    unit: undefined,
+    count: 0,
+    unit: Unit.GRAMM,
   });
 
   if (ingredientsLoading) {
@@ -89,8 +90,9 @@ function IngredientPopover({ id, name }: IngredientPopoverType) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="h-8 w-8 p-0" variant={"outline"}>
-          {(totalCount ?? 0) < 10 ? totalCount : "9+"}
+        <Button className="h-8 w-full py-0" variant={"outline"}>
+          {(totalCount ?? 0) < 10 ? totalCount : "9+"}{" "}
+          {totalCount == 1 ? "Zutat" : "Zutaten"}
         </Button>
       </DialogTrigger>
       <DialogContent className="w-[calc(100vw-1.5rem)] rounded-lg">
@@ -101,7 +103,7 @@ function IngredientPopover({ id, name }: IngredientPopoverType) {
             hinzu.
           </DialogDescription>
         </DialogHeader>
-        <Table className="overflow-hidden rounded-lg">
+        <Table className="max-w-full overflow-hidden rounded-lg">
           <TableBody>
             {ingredientsInMeal?.map((entry) => {
               return (
@@ -110,7 +112,13 @@ function IngredientPopover({ id, name }: IngredientPopoverType) {
                     {entry.ingredient.name}
                   </TableCell>
                   <TableCell className="py-3 text-right">
-                    {entry.count} {unitMap[entry.unit]}
+                    <div className="flex items-center justify-end gap-3">
+                      {/* {entry.count} {unitMap[entry.unit]} */}
+                      <RemoveIngredientMeal
+                        mealId={entry.mealId}
+                        ingredientId={entry.ingredientId}
+                      />
+                    </div>
                   </TableCell>
                 </TableRow>
               );
@@ -130,10 +138,10 @@ function IngredientPopover({ id, name }: IngredientPopoverType) {
                   filter={ingredientsInMeal}
                 />
               </TableCell>
-              <TableCell className="flex justify-end gap-1">
-                <Input
+              <TableCell className="flex items-center justify-end gap-1">
+                {/* <Input
                   className="w-[100px]"
-                  value={ingredient.count}
+                  value={ingredient.count ?? ""}
                   onKeyDown={(event) => {
                     if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
                       event.preventDefault();
@@ -149,8 +157,8 @@ function IngredientPopover({ id, name }: IngredientPopoverType) {
                       };
                     });
                   }}
-                />
-                <Select
+                /> */}
+                {/* <Select
                   value={ingredient.unit}
                   onValueChange={(value: Unit) => {
                     setIngredient((prev) => {
@@ -170,9 +178,9 @@ function IngredientPopover({ id, name }: IngredientPopoverType) {
                     <SelectItem value="SPOONS">Lö.</SelectItem>
                     <SelectItem value="PIECES">St.</SelectItem>
                   </SelectContent>
-                </Select>
+                </Select> */}
                 <Button
-                  className="h-10 w-10 p-0"
+                  className="my-1 h-8 w-8 p-0"
                   variant={"outline"}
                   disabled={Object.values(ingredient).some(
                     (value) => value === undefined

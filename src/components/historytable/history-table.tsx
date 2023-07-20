@@ -9,7 +9,7 @@ import { timeOfDayNameMap } from "~/utils/enumMaps";
 import { Button } from "../ui/button";
 import { Loader2, Trash2 } from "lucide-react";
 import React from "react";
-import AddHistory from "./addhistory/add-history";
+import RemoveHistory from "./remove-history-button";
 
 function HistoryTable() {
   const { data: history, isLoading } = api.history.getAll.useQuery();
@@ -66,38 +66,7 @@ export const columns: ColumnDef<({ meal: Meal } | undefined) & History>[] = [
   {
     id: "action",
     cell: ({ row }) => {
-      const [isLoading, setLoading] = React.useState<boolean>(false);
-
-      const ctx = api.useContext();
-
-      const { mutate: deleteEntry } = api.history.deleteEntry.useMutation({
-        onMutate: () => {
-          setLoading(true);
-        },
-        onError: () => {
-          setLoading(false);
-        },
-        onSuccess: () => {
-          ctx.history.getAll.invalidate();
-        },
-      });
-      return (
-        <div className="flex justify-end">
-          <Button
-            size={"icon"}
-            variant={"outline"}
-            onClick={() => {
-              deleteEntry({ data: { id: row.original.id } });
-            }}
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
-            ) : (
-              <Trash2 className="h-4 w-4 text-red-600" />
-            )}
-          </Button>
-        </div>
-      );
+      return <RemoveHistory id={row.original.id} />;
     },
   },
 ];

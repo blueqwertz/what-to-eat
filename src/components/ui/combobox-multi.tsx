@@ -57,13 +57,13 @@ export function ComboboxMulti({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="max-h-[300px] w-[250px] p-0" align="start">
+      <PopoverContent className="w-[250px] p-0" align="start">
         <Command value={input} onValueChange={setInput}>
           <CommandInput placeholder={`${placeholder ?? "Item"} suchen`} />
           <CommandEmpty>
             {`Keine ${placeholder ?? "Items"} gefunden.`}
           </CommandEmpty>
-          <CommandGroup>
+          <CommandGroup className="max-h-[250px] overflow-y-scroll">
             {options.map((option) => (
               <CommandItem
                 key={option.value}

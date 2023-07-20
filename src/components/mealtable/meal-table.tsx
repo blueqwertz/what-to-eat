@@ -29,6 +29,8 @@ import IngredientPopover from "./ingredients-popover";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Loader2, Trash2 } from "lucide-react";
+import dayjs from "dayjs";
+import RemoveMeal from "./remove-meal-button";
 
 export const columns: ColumnDef<Meal>[] = [
   {
@@ -45,42 +47,33 @@ export const columns: ColumnDef<Meal>[] = [
     },
   },
   {
+    header: "Zuletzt",
+    cell: ({ row }) => {
+      const { data, isLoading } = api.meals.getLastHistoryEntry.useQuery({
+        data: { id: row.original.id },
+      });
+
+      if (isLoading || !data) {
+        return <>Loading...</>;
+      }
+      if (data.length == 0) {
+        return <span className="text-muted-foreground">N/A</span>;
+      }
+
+      const dayDiff = dayjs().diff(data[0]?.date, "days");
+
+      return (
+        <>
+          {dayjs(data[0]?.date).format("dd, DD. MMMM")} (vor {dayDiff}{" "}
+          {dayDiff == 1 ? "Tag" : "Tagen"})
+        </>
+      );
+    },
+  },
+  {
     id: "action",
     cell: ({ row }) => {
-      const [isLoading, setLoading] = useState<boolean>(false);
-
-      const ctx = api.useContext();
-
-      const { mutate: deleteEntry } = api.meals.deleteEntry.useMutation({
-        onMutate: () => {
-          setLoading(true);
-        },
-        onError: () => {
-          setLoading(false);
-        },
-        onSuccess: () => {
-          ctx.meals.getAll.invalidate();
-          ctx.history.getAll.invalidate();
-        },
-      });
-      return (
-        <div className="flex justify-end">
-          <Button
-            key={`del-${row.original.id}`}
-            size={"icon"}
-            variant={"outline"}
-            onClick={() => {
-              deleteEntry({ data: { id: row.original.id } });
-            }}
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
-            ) : (
-              <Trash2 className="h-4 w-4 text-red-600" />
-            )}
-          </Button>
-        </div>
-      );
+      return <RemoveMeal id={row.original.id} />;
     },
   },
 ];

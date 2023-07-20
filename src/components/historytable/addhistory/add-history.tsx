@@ -10,7 +10,7 @@ function AddHistory() {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
-        <span className="text-lg font-medium">Was gab's zu essen?</span>
+        <span className="text-lg font-medium">Was gab&apos;s zu essen?</span>
         <Badge variant={"outline"} className="text-xs text-muted-foreground">
           Hier eintragen!
         </Badge>

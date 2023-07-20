@@ -4,7 +4,6 @@ import { MealIngredientCombo } from "./add-meal-ingredient-combo";
 import { Button } from "../ui/button";
 import { api } from "~/utils/api";
 import { Check, Loader2, Plus } from "lucide-react";
-import { handleTRPCerror } from "~/utils/handleTRPCerror";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 function AddMeal() {
@@ -25,12 +24,11 @@ function AddMeal() {
     onMutate: () => {
       setLoading(true);
     },
-    onError: (e) => {
+    onError: () => {
       setLoading(false);
-      handleTRPCerror(e);
     },
     onSuccess: () => {
-      ctx.meals.getAll.invalidate();
+      void ctx.meals.getAll.invalidate();
       setLoading(false);
       setChecked(true);
       setTimeout(() => {
@@ -71,11 +69,11 @@ function AddMeal() {
             value={meal.ingredients}
             setValue={(value, label) => {
               setMeal((prev) => {
-                var check = prev.ingredients.find((entry) => {
+                const check = prev.ingredients.find((entry) => {
                   return entry.value == value;
                 });
 
-                var newIngredients = !!check
+                const newIngredients = !!check
                   ? [
                       ...prev.ingredients.filter((entry) => {
                         return entry.value != value;
@@ -93,9 +91,7 @@ function AddMeal() {
           <Button
             variant={"outline"}
             size={"icon"}
-            disabled={Object.values(meal).some(
-              (value) => value === undefined || value === ""
-            )}
+            disabled={meal.name == undefined || meal.name.length == 0}
             onClick={() => {
               addMeal({
                 data: {

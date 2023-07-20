@@ -4,9 +4,7 @@ import { Combobox } from "../../ui/combobox";
 import { Loader2 } from "lucide-react";
 import useMeal from "~/hooks/useMeal";
 
-type MealComboType = {};
-
-function MealCombo({}: MealComboType) {
+function MealCombo() {
   const { data: ingredients, isLoading } = api.meals.getAll.useQuery();
 
   const { meal, setMeal } = useMeal();
