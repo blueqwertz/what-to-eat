@@ -3,7 +3,11 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const ingredientRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.ingredient.findMany();
+    return ctx.prisma.ingredient.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
   }),
   addEntry: publicProcedure
     .input(z.object({ data: z.object({ name: z.string() }) }))

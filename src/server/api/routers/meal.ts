@@ -5,7 +5,11 @@ import { prisma } from "~/server/db";
 
 export const mealRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.meal.findMany();
+    return ctx.prisma.meal.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
   }),
   getOne: publicProcedure
     .input(
